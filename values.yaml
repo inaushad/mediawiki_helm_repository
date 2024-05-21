@@ -1,0 +1,47 @@
+replicaCount: 1
+
+mediawiki:
+  image:
+    repository: <repo_name>
+    tag: <tag>
+    pullPolicy: Always
+    PullSecrets: <secrets_name>
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: "managed-standardssd-retain"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+mysql:
+  image:
+    repository: mysql
+    tag: "5.7"
+    pullPolicy: Always
+  rootPassword: <root_password>
+  database: <db_name>
+  user: <user_name>
+  password: <password>
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: "managed-standardssd-retain"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+
+service:
+  type: LoadBalancer
+  port: 80
+
+

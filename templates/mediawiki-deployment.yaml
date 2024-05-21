@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediawiki
+  labels:
+    app: {{ include "mediawiki-chart.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: mediawiki
+  template:
+    metadata:
+      labels:
+        app: mediawiki
+    spec:
+      imagePullSecrets:
+           - name: {{ .Values.mediawiki.image.PullSecrets }}
+      containers:
+        - name: mediawiki
+          image: "{{ .Values.mediawiki.image.repository }}:{{ .Values.mediawiki.image.tag }}"
+          imagePullPolicy: {{ .Values.mediawiki.image.pullPolicy }}
+          resources:
+            requests:
+              memory: {{ .Values.mediawiki.resources.requests.memory }}
+              cpu: {{ .Values.mediawiki.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.mediawiki.resources.limits.memory }}
+              cpu: {{ .Values.mediawiki.resources.limits.cpu }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: MEDIAWIKI_DB_HOST
+              value: mysql
+            - name: MEDIAWIKI_DB_NAME
+              value: {{ .Values.mysql.database }}
+            - name: MEDIAWIKI_DB_USER
+              value: {{ .Values.mysql.user }}
+            - name: MEDIAWIKI_DB_PASSWORD
+              value: {{ .Values.mysql.password }}
+          volumeMounts:
+            - name: mediawiki-storage
+              mountPath: /var/www/html/images
+      volumes:
+        - name: mediawiki-storage
+          persistentVolumeClaim:
+            claimName: mediawiki-pvc
+

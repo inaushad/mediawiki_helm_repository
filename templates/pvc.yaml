@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  labels:
+    app: {{ include "mediawiki-chart.fullname" . }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistence.size }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mediawiki-pvc
+  labels:
+    app: {{ include "mediawiki-chart.fullname" . }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.mediawiki.persistence.size }}
+  storageClassName: {{ .Values.mediawiki.persistence.storageClass | quote }}
+
